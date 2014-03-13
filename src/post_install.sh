@@ -1,20 +1,27 @@
 #!/bin/bash  
 #
 
-VERSION="1.0"
+VERSION = "1.1"
+PACKAGE_MANAGER =
 
-clear
+# clear
 echo "Post install script"
 echo "Author  : Quentin Boileau"
 echo "Contact : quentin.boileau@gmail.com"
+echo "Updated by: Rounak SIngh <rounaksingh17@gmail.com>"
 echo "Version : $VERSION"
 
+sleep 2;
+
 if [ $EUID -ne 0 ]; then
-  echo "This script must be lunched as root use : sudo $0" 1>&2
+  echo "This script must be launched as root; use sudo $0" 1>&2
   exit 1
 fi
 
-#start by install aptitude 
+#start by updating the apt-cache
+# apt-get update
+
+#install aptitude 
 apt-get -y install aptitude
 
 echo "Make temporary ./post_install directory"
@@ -61,7 +68,7 @@ bool_wallch=false
 home_menu() {
 	clear
 	echo "Post install script $VERSION"
-	echo "Home : "
+	echo "/Home : "
 	select choix in "Developement" "Internet" "Games" "Music" "Tools" "Others" "Do install" "Exit" 
 	do 
 	        case $REPLY in 
@@ -81,7 +88,7 @@ home_menu() {
 dev_menu() {
 	clear
 	echo "Post install script $VERSION"
-	echo "Developpement : "
+	echo "/Home/Developement : "
 	select choix in "Mercurial (Hg)" "Meld" "Git" "LAMP (Apache2/PHP5/MySQL)" "GO language" "PostgreSQL 9.1" "Home menu" 
 	do 
 	        case $REPLY in 
@@ -100,7 +107,7 @@ dev_menu() {
 internet_menu() {
 	clear
 	echo "Post install script $VERSION"
-	echo "Internet : "
+	echo "/Home/Internet : "
 	select choix in "Google Chrome" "Skype" "Dropbox" "Home menu" 
 	do 
 	        case $REPLY in 
@@ -153,7 +160,7 @@ tools_menu() {
 	                2) bool_terminator=true ;;
 	                3) bool_sublimetext=true ;; 
 	                4) bool_printer=true ;; 
-   			5) bool_filezilla=true ;;
+   					5) bool_filezilla=true ;;
 	                6) home_menu ;; 
 	                *) echo "~ unknow choice $REPLY" ;; 
 	        esac 
