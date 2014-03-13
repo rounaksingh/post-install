@@ -1,8 +1,8 @@
 #!/bin/bash  
 #
 
-VERSION = "1.1"
-PACKAGE_MANAGER =
+VERSION="1.1"
+PACKAGE_MANAGER=""
 
 # clear
 echo "Post install script"
@@ -18,6 +18,7 @@ if [ $EUID -ne 0 ]; then
   exit 1
 fi
 
+
 #start by updating the apt-cache
 # apt-get update
 
@@ -32,6 +33,23 @@ cd ./post_install
 # Script global variables
 ##################
 LIST=""
+SELECTED_PACKAGES=""
+
+select_package()
+{
+	SELECTED_PACKAGES=$SELECTED_PACKAGES" $1";
+	echo "Selected Packages: $SELECTED_PACKAGES";
+}
+
+echo_menu_start()
+{
+	clear
+	echo "Post install script $VERSION"
+	echo "Selected Packages: $SELECTED_PACKAGES"
+	echo
+	echo "/Home$1 : "
+	echo 
+}
 
 #install states
 
@@ -66,11 +84,10 @@ bool_equinox=false
 bool_wallch=false
 
 home_menu() {
-	clear
-	echo "Post install script $VERSION"
-	echo "/Home : "
+	echo_menu_start;
 	select choix in "Developement" "Internet" "Games" "Music" "Tools" "Others" "Do install" "Exit" 
 	do 
+			
 	        case $REPLY in 
 	                1) dev_menu ;; 
 	                2) internet_menu ;; 
@@ -87,17 +104,22 @@ home_menu() {
 
 dev_menu() {
 	clear
-	echo "Post install script $VERSION"
-	echo "/Home/Developement : "
+	echo_menu_start "/Developement";
 	select choix in "Mercurial (Hg)" "Meld" "Git" "LAMP (Apache2/PHP5/MySQL)" "GO language" "PostgreSQL 9.1" "Home menu" 
 	do 
 	        case $REPLY in 
-	                1) bool_mercurial=true ;; 
-	                2) bool_meld=true ;; 
-	                3) bool_git=true ;; 
-	                4) bool_lamp=true ;; 
-	                5) bool_golang=true ;; 
-					6) bool_postgresql=true ;;
+	                1) bool_mercurial=true ;
+						select_package Mercurial;;
+	                2) bool_meld=true ;
+						select_package Meld;; 
+	                3) bool_git=true ;
+						select_package Git;;
+	                4) bool_lamp=true ;
+						select_package LAMP;;
+	                5) bool_golang=true ;
+						select_package 'GO Language';;
+					6) bool_postgresql=true ;
+						select_package 'PostgreSQL 9.1';;
 	                7) home_menu ;; 
 	                *) echo "~ unknow choice $REPLY" ;; 
 	        esac 
@@ -106,14 +128,16 @@ dev_menu() {
 
 internet_menu() {
 	clear
-	echo "Post install script $VERSION"
-	echo "/Home/Internet : "
+	echo_menu_start "/Internet";
 	select choix in "Google Chrome" "Skype" "Dropbox" "Home menu" 
 	do 
 	        case $REPLY in 
-	                1) bool_chrome=true ;; 
-	                2) bool_skype=true ;; 
-	                3) bool_dropbox=true ;; 
+	                1) bool_chrome=true ;
+						select_package Google-Chrome;;
+	                2) bool_skype=true ;
+						select_package Skype;;
+	                3) bool_dropbox=true ;
+						select_package Dropbox;;
 	                4) home_menu ;; 
 	                *) echo "~ unknow choice $REPLY" ;; 
 	        esac 
@@ -123,12 +147,12 @@ internet_menu() {
 
 games_menu() {
 	clear
-	echo "Post install script $VERSION"
-	echo "Games : "
+	echo_menu_start "/Games";
 	select choix in "Steam" "Home menu" 
 	do 
 	        case $REPLY in 
-	                1) bool_steam=true ;; 
+	                1) bool_steam=true ;
+						select_package Steam;;
 	                2) home_menu ;; 
 	                *) echo "~ unknow choice $REPLY" ;; 
 	        esac 
@@ -137,12 +161,12 @@ games_menu() {
 
 music_menu() {
 	clear
-	echo "Post install script $VERSION"
-	echo "Music : "
+	echo_menu_start "/Music";
 	select choix in "Spotify" "Home menu" 
 	do 
 	        case $REPLY in 
-	                1) bool_spotify=true ;; 
+	                1) bool_spotify=true ;
+						select_package Spotify;; 
 	                2) home_menu ;; 
 	                *) echo "~ unknow choice $REPLY" ;; 
 	        esac 
@@ -151,16 +175,20 @@ music_menu() {
 
 tools_menu() {
 	clear
-	echo "Post install script $VERSION"
-	echo "Music : "
+	echo_menu_start "/Tools";
 	select choix in "Gparted" "Terminator" "Sublime text 2" "Printer Canon MP620" "Filezilla" "Home menu" 
 	do 
 	        case $REPLY in 
-	                1) bool_gparted=true ;; 
-	                2) bool_terminator=true ;;
-	                3) bool_sublimetext=true ;; 
-	                4) bool_printer=true ;; 
-   					5) bool_filezilla=true ;;
+	                1) bool_gparted=true ;
+						select_package Gparted;;
+	                2) bool_terminator=true ;
+						select_package Terminator;;
+	                3) bool_sublimetext=true ;
+						select_package "'Sublime Text 2'";;
+	                4) bool_printer=true ;
+						select_package Printer;;
+   					5) bool_filezilla=true ;
+						select_package Filezilla;;
 	                6) home_menu ;; 
 	                *) echo "~ unknow choice $REPLY" ;; 
 	        esac 
@@ -169,12 +197,12 @@ tools_menu() {
 
 others_menu() {
 	clear
-	echo "Post install script $VERSION"
-	echo "Other : "
+	echo_menu_start "/Others"
 	select choix in "Wallch" "Home menu" 
 	do 
 	        case $REPLY in 
-	                1) bool_wallch=true ;; 
+	                1) bool_wallch=true ;
+						select_package Wallch;;
 	                2) home_menu ;; 
 	                *) echo "~ unknow choice $REPLY" ;; 
 	        esac 
