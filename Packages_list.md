@@ -4,7 +4,7 @@ New Packages Supported by the Installation script(added on March 22, 2014):
 
 2. sublime_text_3
 
-3. fatrat (Downloaders)
+3. fatrat (Web Downloader)
 
 4. chrome 32 and 64 bits using Google Repo
 
