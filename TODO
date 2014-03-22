@@ -1,0 +1,33 @@
+TODO
+
+* list at the bottom of the selected programs
+
+* check internet connection
+
+* also check error in between the installation
+
+* PWD dir pushd and again popd
+
+* put sleep in between
+
+* The below softwares are needed to connect
+1> vlc
+2> sublime_text_3
+3> fatrat (Downloaders)
+4> chrome 32 and 64 bits using ppa
+5> Dropbox nemo or nautilus
+6> grub-customizer
+7> wireshark (packet-sniffer)
+8> wine (to run windows program)
+9> htop (system-monitering)
+10> git configuration (automatic global variable setup)
+11> programming--- lammp phpmyadmin mongodb
+12> 
+
+* Details about packages
+
+* Remove the packages from the selected packages list.
+
+* Sources.list files add
+
+* Nemo Dropbox support 
