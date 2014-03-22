@@ -2,7 +2,7 @@
 #
 
 VERSION="1.1"
-PACKAGE_MANAGER=""
+# PACKAGE_MANAGER=""
 
 # clear
 echo "Post install script"
@@ -25,9 +25,9 @@ fi
 #install aptitude 
 apt-get -y install aptitude
 
-echo "Make temporary ./post_install directory"
-mkdir post_install
-cd ./post_install
+echo "Make temporary ./temp_dir_install directory"
+mkdir temp_dir_install
+cd ./temp_dir_install
 
 ##################
 # Script global variables
@@ -53,31 +53,40 @@ echo_menu_start()
 
 #install states
 
-#dev
+#dev -- Anything which is used by programmers or developers
 bool_mercurial=false
 bool_git=false
 bool_meld=false
 bool_lamp=false
+bool_mongodb=false
 bool_golang=false
 bool_postgresql=false
+bool_sublimetext_2=false
+bool_sublimetext_3=false
 
-#internet
+#internet -- anything which uses the Internet
 bool_chrome=false
 bool_skype=false
+bool_fatrat=false
+bool_filezilla=false
+bool_nemodropbox=false
+bool_nautilusdropbox=false
 
 #game
 bool_steam=false
 
-#music
+#Music & Video related packages
 bool_spotify=false
+bool_vlc=false
 
-#tools
+#tools -- System related tools -- ease the usability
 bool_gparted=false
 bool_terminator=false
-bool_dropbox=false
 bool_printer=false
-bool_sublimetext=false
-bool_filezilla=false
+bool_grubcustomizer=false
+bool_wireshark=false
+bool_wine=false
+bool_htop=false
 
 #other
 bool_equinox=false
@@ -105,7 +114,8 @@ home_menu() {
 dev_menu() {
 	clear
 	echo_menu_start "/Developement";
-	select choix in "Mercurial (Hg)" "Meld" "Git" "LAMP (Apache2/PHP5/MySQL)" "GO language" "PostgreSQL 9.1" "Home menu" 
+	select choix in "Mercurial (Hg)" "Meld" "Git" "LAMP (Apache2/PHP5/MySQL)" "MongoDB" "GO language" \
+	"PostgreSQL 9.1" "Sublime Text 2" "Sublime Text 3" "Home menu" 
 	do 
 	        case $REPLY in 
 	                1) bool_mercurial=true ;
@@ -116,11 +126,17 @@ dev_menu() {
 						select_package Git;;
 	                4) bool_lamp=true ;
 						select_package LAMP;;
-	                5) bool_golang=true ;
+					5) bool_mongodb=true ;
+						select_package MongoDB;;
+	                6) bool_golang=true ;
 						select_package 'GO Language';;
-					6) bool_postgresql=true ;
+					7) bool_postgresql=true ;
 						select_package 'PostgreSQL 9.1';;
-	                7) home_menu ;; 
+					8) bool_sublimetext_2=true ;
+						select_package SublimeText_2;;
+					9) bool_sublimetext_3=true ;
+						select_package SublimeText_3;;
+	                10) home_menu ;; 
 	                *) echo "~ unknow choice $REPLY" ;; 
 	        esac 
 	done 
@@ -129,16 +145,22 @@ dev_menu() {
 internet_menu() {
 	clear
 	echo_menu_start "/Internet";
-	select choix in "Google Chrome" "Skype" "Dropbox" "Home menu" 
+	select choix in "Google Chrome" "Skype" "FatRat" "Filezilla" "Dropbox-Nemo" "Dropbox-Nautilus" "Home menu" 
 	do 
 	        case $REPLY in 
 	                1) bool_chrome=true ;
 						select_package Google-Chrome;;
 	                2) bool_skype=true ;
 						select_package Skype;;
-	                3) bool_dropbox=true ;
-						select_package Dropbox;;
-	                4) home_menu ;; 
+	                3) bool_fatrat=true ;
+						select_package FatRat;;
+	                4) bool_filezilla=true ;
+						select_package Filezilla;;
+	                5) bool_nemodropbox=true ;
+						select_package Nemo-Dropbox;;
+	                6) bool_nautilusdropbox=true ;
+						select_package Nautilus-Dropbox;;
+	                7) home_menu ;; 
 	                *) echo "~ unknow choice $REPLY" ;; 
 	        esac 
 	done 
@@ -162,12 +184,14 @@ games_menu() {
 music_menu() {
 	clear
 	echo_menu_start "/Music";
-	select choix in "Spotify" "Home menu" 
+	select choix in "Spotify" "VLC" "Home menu" 
 	do 
 	        case $REPLY in 
 	                1) bool_spotify=true ;
 						select_package Spotify;; 
-	                2) home_menu ;; 
+	                2) bool_vlc=true ;
+						select_package VLC;; 
+	                3) home_menu ;; 
 	                *) echo "~ unknow choice $REPLY" ;; 
 	        esac 
 	done 
@@ -176,20 +200,24 @@ music_menu() {
 tools_menu() {
 	clear
 	echo_menu_start "/Tools";
-	select choix in "Gparted" "Terminator" "Sublime text 2" "Printer Canon MP620" "Filezilla" "Home menu" 
+	select choix in "Gparted" "Terminator" "Printer Canon MP620" "Grub-Customizer" "Wireshark" "Wine" "Htop" "Home menu" 
 	do 
 	        case $REPLY in 
 	                1) bool_gparted=true ;
 						select_package Gparted;;
 	                2) bool_terminator=true ;
 						select_package Terminator;;
-	                3) bool_sublimetext=true ;
-						select_package "'Sublime Text 2'";;
-	                4) bool_printer=true ;
+	                3) bool_printer=true ;
 						select_package Printer;;
-   					5) bool_filezilla=true ;
-						select_package Filezilla;;
-	                6) home_menu ;; 
+   					4) bool_grubcustomizer=true ;
+						select_package Grub-Customizer;;
+					5) bool_wireshark=true ;
+						select_package Wireshark;;
+					6) bool_sublimetext=true ;
+						select_package Wine;;
+					7) bool_sublimetext=true ;
+						select_package Htop;;
+	                8) home_menu ;; 
 	                *) echo "~ unknow choice $REPLY" ;; 
 	        esac 
 	done 
@@ -208,246 +236,216 @@ others_menu() {
 	        esac 
 	done 
 }
-
+############################################################################################
+# Install function
 start_install() {
 
-	if $bool_postgresql ; then
-	    install_postgresql
-	fi
-
+	##################################################
+	#  Development Packages
+	##################################################
+	
+	##################
+	#Developement - Mercurial
 	if $bool_mercurial ; then
-	    install_mercurial
+		echo "Add Mercurial to list" 
+		LIST=$LIST" mercurial"
 	fi
 
-	if $bool_meld ; then
-	    install_meld
-	fi
-
+	##################
+	#Developement - Git
 	if $bool_git ; then
-	    install_git
+		echo "Add Git to list" 
+		LIST=$LIST" git"
 	fi
 
+	##################
+	#Developement - Meld
+	if $bool_meld ; then
+		echo "Add Meld to list" 
+		LIST=$LIST" meld"
+	fi
+
+	##################
+	#Developement - Apache2/PHP5/MySQL
 	if $bool_lamp ; then
-	    install_lamp
+		echo "Add Apache2/PHP5/MySQL to list" 
+		LIST=$LIST" apache2 mysql-server php5 php5-mysql libapache2-mod-php5"
 	fi
 
+	##################
+	#Developement - MongoDB
+	if $bool_mongodb ; then
+		echo "Add MongoDB to list" 
+		LIST=$LIST" mongodb"
+	fi
+
+	##################
+	#Developement - Go language
 	if $bool_golang ; then
-	    install_golang
+    	echo "Add Go language to list" 
+		LIST=$LIST" golang"
 	fi
 
+	##################
+	##Development - PostGreSQL
+	if $bool_postgresql ; then
+		echo "Add Postgresql 9.1 to list" 
+		LIST=$LIST" libpq5 postgresql-9.1 postgresql-client-9.1 postgresql-client-common postgresql-9.1-postgis pgadmin3"
+	fi
+
+	##################
+	##Development - SublimeText_2
+	if $bool_sublimetext_2 ; then
+		echo "Add Sublime Text 2 to list" 
+		add-apt-repository -y ppa:webupd8team/sublime-text-2
+		LIST=$LIST" sublime-text"
+	fi
+
+	##################
+	##Development - SublimeText_3
+	if $bool_sublimetext_3 ; then
+		echo "Add Sublime Text 3 to list" 
+		add-apt-repository -y ppa:webupd8team/sublime-text-3
+		LIST=$LIST" sublime-text-installer"
+	fi
+
+	##################################################
+	#  Internet Packages
+	##################################################
+
+	##################
+	#Internet - Skype
 	if $bool_skype ; then
-	    install_skype
+	    echo "Add Skype to list" 
+		LIST=$LIST" skype libasound2-plugins"
 	fi
 
-	if $bool_spotify ; then
-	    install_spotify
+	##################
+	#Internet - Nautilus-Dropbox -- from ubuntu repo
+	if $bool_nautilusdropbox ; then
+		echo "Add Dropbox to list" 
+		LIST=$LIST" nautilus-dropbox"
 	fi
 
-	if $bool_gparted ; then
-	    install_gparted
+	##################
+	#Internet - Nemo-Dropbox
+	# if $bool_nemodropbox ; then
+		
+	# fi
+
+	##################
+	#Internet - Chrome Stable -- from google repo
+	if $bool_chrome ; then
+		echo -e "\n\n Creating a source.list file for Google Chrome"
+		echo -e "#Google Chrome Repo\ndeb http://dl.google.com/linux/deb/ stable non-free main" > /etc/apt/sources.list.d/google-chrome.list
+		######################
+		echo -e "\n\nInstalling Google GPG key"
+		wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - -y
+		echo -e "\nAdd Google Chrome to list" 
+		LIST=$LIST" google-chrome-stable"
 	fi
 
-	if $bool_terminator ; then
-	    install_terminator
-	fi
-
-	if $bool_sublimetext ; then
-	    install_sublimetext
-	fi
-
+	###################
+	#Internet - Filezilla -- from ubuntu repo
 	if $bool_filezilla; then
-	    install_filezilla
+		echo "Add Filezilla to list" 
+		LIST=$LIST" filezilla"
+	fi
+	
+	###################
+	#Internet - FatRat -- from ubuntu repo
+	if $bool_fatrat; then
+	    echo "Add FatRat to list" 
+		LIST=$LIST" fatrat"
 	fi
 
-	if $bool_dropbox ; then
-	    install_dropbox
+
+	##################################################
+	#  Music Packages
+	##################################################
+
+	##################
+	#Music - Spotify
+	if $bool_spotify ; then
+		echo "Prepare Spotify" 
+		sh -c 'echo "deb http://repository.spotify.com stable non-free" >> /etc/apt/sources.list.d/spotify.list' 
+		apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 94558F59 
+		LIST=$LIST" spotify-client"
 	fi
 
+	##################
+	#Music - VLC
+	if $bool_vlc ; then
+		echo "Adding VLC to list"
+		LIST=$LIST" vlc"
+	fi
+
+	##################################################
+	#  Tools Packages
+	##################################################
+
+	##################
+	#Tools - Gparted
+	if $bool_gparted ; then
+	    echo "Add Gparted to list" 
+		LIST=$LIST" gparted"
+	fi
+
+	##################
+	#Tools - Terminator
+	if $bool_terminator ; then
+	   	echo "Add Terminator to list" 
+		LIST=$LIST" terminator"
+
+	fi
+
+	##################
+	#Tools - Printer Canon MP620
+	#https://github.com/cloudnull/MP620-630-Linux-Printer
 	if $bool_printer ; then
-	    install_printer
+		echo "Get MP620 Printer script"
+		git clone git://github.com/cloudnull/MP620-630-Linux-Printer.git
+		cd ./MP620-630-Linux-Printer
+		chmod +x install.sh
+		sh ./install.sh
 	fi
 
+	##################################################
+	#  Others functions
+	##################################################
+
+	##################
+	#Others - Equinox themes
 	if $bool_equinox ; then
-	    install_equinox
+		echo "Add Equinox themes to list" 
+		add-apt-repository ppa:tiheum/equinox
+		LIST=$LIST" gtk2-engines-equinox equinox-theme equinox-ubuntu-theme faenza-icon-theme faenza-dark-extras"
 	fi
 
+	##################
+	#Others - Wallch
 	if $bool_wallch ; then
-	    install_wallch
+		echo "Add wallch to list" 
+		LIST=$LIST" wallch"
 	fi
 
 
 	echo "Start install of $LIST "
-	aptitude update
-	aptitude -y install $LIST
-
-	if $bool_chrome ; then
-	    install_chrome
-	fi
-
-	if $bool_steam ; then
-	    install_steam
-	fi
-}
-
-
-
-##################################################
-#  Developement functions
-##################################################
-
-##################
-#Developement - Mercurial
-install_mercurial() {
-	echo "Add Mercurial to list" 
-	LIST=$LIST" mercurial"
-}
-
-##################
-#Developement - Git
-install_git() {
-	echo "Add Git to list" 
-	LIST=$LIST" git"
-}
-
-##################
-#Developement - Go language
-install_golang() {
-	echo "Add Go language to list" 
-	LIST=$LIST" golang"
-}
-
-##################
-#Developement - Meld
-install_meld() {
-	echo "Add Meld to list" 
-	LIST=$LIST" meld"
-}
-
-##################
-#Developement - Apache2/PHP5/MySQL
-install_lamp() {
-	echo "Add Apache2/PHP5/MySQL to list" 
-	LIST=$LIST" apache2 mysql-server php5 php5-mysql libapache2-mod-php5"
-}
-
-install_postgresql() {
-	echo "Add Postgresql 9.1 to list" 
-	LIST=$LIST" libpq5 postgresql-9.1 postgresql-client-9.1 postgresql-client-common postgresql-9.1-postgis pgadmin3"
-}
-
-##################################################
-#  Internet functions
-##################################################
-
-##################
-#Internet - Chrome Stable
-install_chrome() {
-	echo "Install Chrome stable"
-	wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb 
-	dpkg -i google-chrome-stable_current_amd64.deb
-}
-
-##################
-#Internet - Skype
-install_skype() {
-	echo "Add Skype to list" 
-	LIST=$LIST" skype libasound2-plugins:i386"
-}
-
-##################
-#Internet - Dropbox
-install_dropbox() {
-	echo "Add Dropbox to list" 
-	apt-key adv --keyserver pgp.mit.edu --recv-keys 5044912E 
-	LIST=$LIST" nautilus-dropbox"
-}
-
-
-##################################################
-#  Games functions
-##################################################
-
-##################
-#Games - Steam
-install_steam() {
-	echo "Install Steam" 
-	wget http://media.steampowered.com/client/installer/steam.deb 
-	dpkg -i steam.deb
-}
-
-
-##################################################
-#  Music functions
-##################################################
-
-##################
-#Music - Spotify
-install_spotify() {
-	echo "Prepare Spotify" 
-	sh -c 'echo "deb http://repository.spotify.com stable non-free" >> /etc/apt/sources.list.d/spotify.list' 
-	apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 94558F59 
-	LIST=$LIST" spotify-client"
-}
-
-
-##################################################
-#  Tools functions
-##################################################
-
-##################
-#GTools - parted
-install_gparted() {
-	echo "Add Gparted to list" 
-	LIST=$LIST" gparted"
-}
-
-##################
-#Tools - Terminator
-install_terminator() {
-	echo "Add Terminator to list" 
-	LIST=$LIST" terminator"
-}
-
-##################
-#Tools - Printer Canon MP620
-#https://github.com/cloudnull/MP620-630-Linux-Printer
-install_printer() {
-	echo "Get MP620 Printer script"
-	git clone git://github.com/cloudnull/MP620-630-Linux-Printer.git
-	cd ./MP620-630-Linux-Printer
-	chmod +x install.sh
-	sh ./install.sh
-}
-
-install_sublimetext() {
-	echo "Add Sublime Text 2 to list" 
-	add-apt-repository ppa:webupd8team/sublime-text-2
-	LIST=$LIST" sublime-text"
-}
-
-install_filezilla() {
-	echo "Add Filezilla to list" 
-	LIST=$LIST" filezilla"
-}
+	# aptitude update
+	# aptitude -y install $LIST
 	
+	##################################################
+	#  Games functions
+	##################################################
 
-##################################################
-#  Others functions
-##################################################
-
-##################
-#Others - Equinox themes
-install_equinox() {
-	echo "Add Equinox themes to list" 
-	add-apt-repository ppa:tiheum/equinox
-	LIST=$LIST" gtk2-engines-equinox equinox-theme equinox-ubuntu-theme faenza-icon-theme faenza-dark-extras"
+	##################
+	#Games - Steam -- Uncomment if you want to install steam
+	# if $bool_steam ; then
+	#     echo "Install Steam" 
+	# 	wget http://media.steampowered.com/client/installer/steam.deb 
+	# 	dpkg -i steam.deb
+	# fi
 }
-
-install_wallch() {
-	echo "Add wallch to list" 
-	LIST=$LIST" wallch"
-}
-
 
 ###################################
 # MAIN
