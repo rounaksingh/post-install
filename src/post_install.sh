@@ -65,6 +65,7 @@ bool_sublimetext_2=false
 bool_sublimetext_3=false
 bool_phpmyadmin=false
 bool_lampp=false
+bool_node=false
 
 #internet -- anything which uses the Internet
 bool_chrome=false
@@ -117,8 +118,9 @@ home_menu() {
 dev_menu() {
 	clear
 	echo_menu_start "/Developement";
-	select choix in "Mercurial (Hg)" "Meld" "Git" "LAMP (Apache2/PHP5/MySQL)" "MongoDB" "GO language" \
-	"PostgreSQL 9.1" "Sublime Text 2" "Sublime Text 3" "PHPMyAdmin" "LAMPP with PHPMyAdmin" "Home menu" 
+	select choix in "Mercurial (Hg)" "Meld" "Git" "LAMP (Apache2/PHP5/MySQL from ubuntu repo)" "MongoDB" "GO language" \
+	"PostgreSQL 9.1" "Sublime Text 2 from webupd8team repo" "Sublime Text 3 from webupd8team repo" \
+	"PHPMyAdmin from ubuntu repo" "LAMPP with PHPMyAdmin(from apachefriends.org)" "Node.js" "Home menu" 
 	do 
 	        case $REPLY in 
 	                1) bool_mercurial=true ;
@@ -143,7 +145,9 @@ dev_menu() {
 						select_package PHPMyAdmin;;
 					11) bool_lampp=true;
 						select_package "LAMPP with PHPMyAdmin";;
-	                12) home_menu ;; 
+					12) bool_node=true;
+						select_package "Node.js";;
+	                13) home_menu ;; 
 	                *) echo "~ unknow choice $REPLY" ;; 
 	        esac 
 	done 
@@ -353,7 +357,7 @@ start_install() {
 	#Internet - Chrome Stable -- from google repo
 	if $bool_chrome ; then
 		echo -e "\n\n Creating a source.list file for Google Chrome"
-		echo -e "#Google Chrome Repo\ndeb http://dl.google.com/linux/deb/ stable non-free main" > /etc/apt/sources.list.d/google-chrome.list
+		echo -e "#Google Chrome Repo; automatically added by post_install.sh\ndeb http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list
 		######################
 		echo -e "\n\nInstalling Google GPG key"
 		wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - -y
@@ -503,7 +507,7 @@ start_install() {
 	# Lampp with phpmyadmin -- Uncomment if you want to install steam
 	 if $bool_lampp ; then
 	    echo "Installing LAMPP with phpmyadmin" 
-	 	wget http://downloads.sourceforge.net/project/xampp/XAMPP%20Linux/1.8.3/xampp-linux-1.8.3-3-installer.run && ./xampp-linux-1.8.3-3-installer.run 
+	 	wget http://downloads.sourceforge.net/project/xampp/XAMPP%20Linux/1.8.3/xampp-linux-1.8.3-3-installer.run && chmod 700 ./xampp-linux-1.8.3-3-installer.run && ./xampp-linux-1.8.3-3-installer.run
 	 fi
 	
 	###################################################
@@ -518,6 +522,21 @@ start_install() {
 		
 		#fi
 
+	fi
+
+
+	##################
+	# Installation of Developement - Node.js
+	if $bool_node ; then
+    	echo "Add Node.js to list" 
+    	echo -e "\n\nStarting Installation of node -- Latest version from github.com\n"
+    	echo -e "Installing Dependencies of node\n"
+		aptitude install g++ curl libssl-dev apache2-utils git-core
+		echo -e "Cloning Node.js using git from github.com\n"
+		git clone https://github.com/joyent/node.git
+		echo -e "Building Node.js...\n"
+		cd node && ./configure && make && make install && echo -e "Node.js Installation Complete.\n" 
+		cd ..
 	fi
 
 	exit
