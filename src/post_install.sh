@@ -26,7 +26,7 @@ fi
 apt-get -y install aptitude
 
 echo "Make temporary ./temp_dir_install directory"
-mkdir temp_dir_install
+mkdir -p temp_dir_install
 cd ./temp_dir_install
 
 ##################
@@ -93,8 +93,9 @@ bool_equinox=false
 bool_wallch=false
 
 home_menu() {
+	
 	echo_menu_start;
-	select choix in "Developement" "Internet" "Games" "Music" "Tools" "Others" "Do install" "Exit" 
+	select choix in "Developement" "Internet" "Games" "Music" "Tools" "Others" "Do install and Exit" "Exit" 
 	do 
 			
 	        case $REPLY in 
@@ -213,9 +214,9 @@ tools_menu() {
 						select_package Grub-Customizer;;
 					5) bool_wireshark=true ;
 						select_package Wireshark;;
-					6) bool_sublimetext=true ;
+					6) bool_wine=true ;
 						select_package Wine;;
-					7) bool_sublimetext=true ;
+					7) bool_htop=true ;
 						select_package Htop;;
 	                8) home_menu ;; 
 	                *) echo "~ unknow choice $REPLY" ;; 
@@ -226,12 +227,14 @@ tools_menu() {
 others_menu() {
 	clear
 	echo_menu_start "/Others"
-	select choix in "Wallch" "Home menu" 
+	select choix in "Equinox themes" "Wallch" "Home menu" 
 	do 
 	        case $REPLY in 
-	                1) bool_wallch=true ;
+	        		1) bool_equinox=true;
+						select_package Equinox;;
+	                2) bool_wallch=true ;
 						select_package Wallch;;
-	                2) home_menu ;; 
+	                3) home_menu ;; 
 	                *) echo "~ unknow choice $REPLY" ;; 
 	        esac 
 	done 
@@ -410,6 +413,37 @@ start_install() {
 		sh ./install.sh
 	fi
 
+	##################
+	#Tools - Grub-Customizer
+	# if $bool_terminator ; then
+	#    	echo "Add Grub-Customizer to list" 
+	# 	LIST=$LIST" grub-customizer"
+
+	# fi
+
+	##################
+	#Tools - Wireshark
+	if $bool_wireshark ; then
+	   	echo "Add WireShark to list" 
+		LIST=$LIST" wireshark"
+	fi
+	
+	##################
+	#Tools - Wine
+	if $bool_wine ; then
+	   	echo "Add Wine to list" 
+		LIST=$LIST" wine"
+
+	fi
+
+	##################
+	#Tools - Htop
+	if $bool_htop ; then
+	   	echo "Add Htop to list" 
+		LIST=$LIST" htop"
+
+	fi
+
 	##################################################
 	#  Others functions
 	##################################################
@@ -431,8 +465,8 @@ start_install() {
 
 
 	echo "Start install of $LIST "
-	# aptitude update
-	# aptitude -y install $LIST
+	aptitude update
+	aptitude -y install $LIST
 	
 	##################################################
 	#  Games functions
@@ -445,6 +479,8 @@ start_install() {
 	# 	wget http://media.steampowered.com/client/installer/steam.deb 
 	# 	dpkg -i steam.deb
 	# fi
+	
+	exit
 }
 
 ###################################
