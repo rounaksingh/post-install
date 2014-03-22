@@ -22,7 +22,7 @@ The script does not provide any automation more than this. In detail, the script
 
 The script also does not provide any options to purge or remove any packages.
 
-## Platform
+### Platform
 For now the script is dependent on the Ubuntu and Linux Mint. Because of the package handling utility and filesystem directories.
 
 RedHat and Fedora are not supported. May be implemented in future releases.

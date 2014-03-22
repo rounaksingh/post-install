@@ -64,6 +64,7 @@ bool_postgresql=false
 bool_sublimetext_2=false
 bool_sublimetext_3=false
 bool_phpmyadmin=false
+bool_lampp=false
 
 #internet -- anything which uses the Internet
 bool_chrome=false
@@ -117,7 +118,7 @@ dev_menu() {
 	clear
 	echo_menu_start "/Developement";
 	select choix in "Mercurial (Hg)" "Meld" "Git" "LAMP (Apache2/PHP5/MySQL)" "MongoDB" "GO language" \
-	"PostgreSQL 9.1" "Sublime Text 2" "Sublime Text 3" "PHPMyAdmin" "Home menu" 
+	"PostgreSQL 9.1" "Sublime Text 2" "Sublime Text 3" "PHPMyAdmin" "LAMPP with PHPMyAdmin" "Home menu" 
 	do 
 	        case $REPLY in 
 	                1) bool_mercurial=true ;
@@ -140,7 +141,9 @@ dev_menu() {
 						select_package SublimeText_3;;
 					10) bool_phpmyadmin=true ;
 						select_package PHPMyAdmin;;
-	                11) home_menu ;; 
+					11) bool_lampp=true;
+						select_package "LAMPP with PHPMyAdmin";;
+	                12) home_menu ;; 
 	                *) echo "~ unknow choice $REPLY" ;; 
 	        esac 
 	done 
@@ -475,10 +478,11 @@ start_install() {
 
 
 	echo "Start install of "$LIST
-	if []
+	# check if the LIST is not empty
+	if [[ -n "$LIST" ]]; then
 	aptitude update
 	aptitude -y install $LIST
-	
+	fi
 	##################################################
 	#  Games functions
 	##################################################
@@ -491,7 +495,17 @@ start_install() {
 	# 	dpkg -i steam.deb
 	# fi
 	
+	##################################################
+	# LAMPP package
+	##################################################
 
+	##################
+	# Lampp with phpmyadmin -- Uncomment if you want to install steam
+	 if $bool_lampp ; then
+	    echo "Installing LAMPP with phpmyadmin" 
+	 	wget http://downloads.sourceforge.net/project/xampp/XAMPP%20Linux/1.8.3/xampp-linux-1.8.3-3-installer.run && ./xampp-linux-1.8.3-3-installer.run 
+	 fi
+	
 	###################################################
 	# Post Installation procedure for PHPMyAdmin
 	###################################################
@@ -508,7 +522,6 @@ start_install() {
 
 	exit
 }
-
 ###################################
 # MAIN
 
