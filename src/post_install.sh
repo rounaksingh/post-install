@@ -63,6 +63,7 @@ bool_golang=false
 bool_postgresql=false
 bool_sublimetext_2=false
 bool_sublimetext_3=false
+bool_phpmyadmin=false
 
 #internet -- anything which uses the Internet
 bool_chrome=false
@@ -116,7 +117,7 @@ dev_menu() {
 	clear
 	echo_menu_start "/Developement";
 	select choix in "Mercurial (Hg)" "Meld" "Git" "LAMP (Apache2/PHP5/MySQL)" "MongoDB" "GO language" \
-	"PostgreSQL 9.1" "Sublime Text 2" "Sublime Text 3" "Home menu" 
+	"PostgreSQL 9.1" "Sublime Text 2" "Sublime Text 3" "PHPMyAdmin" "Home menu" 
 	do 
 	        case $REPLY in 
 	                1) bool_mercurial=true ;
@@ -137,7 +138,9 @@ dev_menu() {
 						select_package SublimeText_2;;
 					9) bool_sublimetext_3=true ;
 						select_package SublimeText_3;;
-	                10) home_menu ;; 
+					10) bool_phpmyadmin=true ;
+						select_package PHPMyAdmin;;
+	                11) home_menu ;; 
 	                *) echo "~ unknow choice $REPLY" ;; 
 	        esac 
 	done 
@@ -312,6 +315,13 @@ start_install() {
 		LIST=$LIST" sublime-text-installer"
 	fi
 
+	##################
+	#Developement - PHPMyAdmin
+	if $bool_phpmyadmin ; then
+    	echo "Add PHPMyAdmin to list" 
+		LIST=$LIST" phpmyadmin"
+	fi
+
 	##################################################
 	#  Internet Packages
 	##################################################
@@ -464,7 +474,8 @@ start_install() {
 	fi
 
 
-	echo "Start install of $LIST "
+	echo "Start install of "$LIST
+	if []
 	aptitude update
 	aptitude -y install $LIST
 	
@@ -480,6 +491,21 @@ start_install() {
 	# 	dpkg -i steam.deb
 	# fi
 	
+
+	###################################################
+	# Post Installation procedure for PHPMyAdmin
+	###################################################
+	if $bool_phpmyadmin ; then
+		
+		echo -e '\n\nStarting PHPMyAdmin Post Installation Procedure:'
+		echo -e '\n\n#For Phpmyadmin; Automatically edited by post_install.sh\nInclude /etc/phpmyadmin/apache.conf' >> /etc/apache2/apache2.conf
+		echo -e 'Processed the Apache2 config file: /etc/apache2/apache2.conf'
+		#if[ -e /etc/apache2/apache2.conf -a -e /etc/phpmyadmin/apache.conf]; then
+		
+		#fi
+
+	fi
+
 	exit
 }
 
