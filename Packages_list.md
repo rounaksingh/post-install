@@ -17,3 +17,5 @@ New Packages Supported by the Installation script(added on March 22, 2014):
 8. wine (to run windows program)
 
 9. htop (system-monitering)
+
+10. PHPMyAdmin (with post configuration of apache2 server config file)

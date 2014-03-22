@@ -1,10 +1,10 @@
 TODO
 
-* list at the bottom of the selected programs
+* Information about the System on which script is being run. information should be displayed at first and every page of the menu.
 
 * check internet connection
 
-* also check error in between the installation
+* also check errors of aptitude and apt-get in between the installation. File existance check for post installation steps.
 
 * PWD dir pushd and again popd
 
@@ -12,9 +12,7 @@ TODO
 
 * The below softwares are needed to connect
 
-10> git configuration (automatic global variable setup)
-11> programming--- lammp phpmyadmin mongodb
-12> 
+* git configuration (automatic global variable setup)
 
 * Details about packages
 
