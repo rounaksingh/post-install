@@ -531,7 +531,7 @@ start_install() {
     	echo "Add Node.js to list" 
     	echo -e "\n\nStarting Installation of node -- Latest version from github.com\n"
     	echo -e "Installing Dependencies of node\n"
-		aptitude install g++ curl libssl-dev apache2-utils git-core
+		aptitude -y install g++ curl libssl-dev apache2-utils git-core
 		echo -e "Cloning Node.js using git from github.com\n"
 		git clone https://github.com/joyent/node.git
 		echo -e "Building Node.js...\n"

@@ -42,3 +42,4 @@ If the script opens the "Home menu", then you can select the packages which you 
 For some packages like phpmyadmin, there is a post installation steps which need to be executed manually or automatically for implementing phpmyadmin using apache2 server. This step is automatically proceeded and the Include statement is appended to the apache2 config file. Please beware that the script only does the minimum configuration to make the phpmyadmin run. Please read the manual of phpmyadmin for security settings and do it manually.
 
 ## For Developers
+If you want to edit or add new software support, then **FORK AWAY!**

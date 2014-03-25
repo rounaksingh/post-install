@@ -6,6 +6,8 @@
 
 * also check errors of aptitude and apt-get in between the installation. File existance check for post installation steps.
 
+* provide an option for download speed limit for aptitude.
+
 * Remove the packages from the selected packages list.
 
 * PWD dir pushd and again popd
@@ -22,12 +24,18 @@
 
 * Sources.list files add
 
-* Nemo Dropbox support
-
-* Grub customizer support
-
-* add 64 bit full support for google-chrome, etc.
-
 * add Redhat and fedora support
 
 * Readme.md updation about temp_dir_install.
+
+* change the lamp name to individual like apache2, mysql, php support for apache2-- since it is creating confusion while searching for the packages to install.
+
+* list of packages lastly installed.
+
+* Support packages: 
+
+	* Nemo Dropbox support
+
+	* Grub customizer support
+
+	* add 64 bit full support for google-chrome, etc.
