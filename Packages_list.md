@@ -1,4 +1,4 @@
-New Packages Supported by the Installation script(added on March 22, 2014):
+New Packages Supported by the Installation script(added on March 22, 2014, edited on March 31, 2014):
 
 1. vlc
 
@@ -14,7 +14,7 @@ New Packages Supported by the Installation script(added on March 22, 2014):
 
 7. wireshark (packet-sniffer)
 
-8. wine (to run windows program)
+8. wine-1.7 (to run windows program)
 
 9. htop (system-monitering)
 

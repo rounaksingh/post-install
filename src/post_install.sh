@@ -211,7 +211,7 @@ music_menu() {
 tools_menu() {
 	clear
 	echo_menu_start "/Tools";
-	select choix in "Gparted" "Terminator" "Printer Canon MP620" "Grub-Customizer" "Wireshark" "Wine" "Htop" "Home menu" 
+	select choix in "Gparted" "Terminator" "Printer Canon MP620" "Grub-Customizer" "Wireshark" "Wine-1.7" "Htop" "Home menu" 
 	do 
 	        case $REPLY in 
 	                1) bool_gparted=true ;
@@ -225,7 +225,7 @@ tools_menu() {
 					5) bool_wireshark=true ;
 						select_package Wireshark;;
 					6) bool_wine=true ;
-						select_package Wine;;
+						select_package Wine-1.7;;
 					7) bool_htop=true ;
 						select_package Htop;;
 	                8) home_menu ;; 
@@ -449,7 +449,10 @@ start_install() {
 	#Tools - Wine
 	if $bool_wine ; then
 	   	echo "Add Wine to list" 
-		LIST=$LIST" wine"
+		# LIST=$LIST" wine" # uncomment and it will install from the debian repo
+		# while below installs wine 1.7 (dev release) from ubuntu repo.
+		add-apt-repository -y ppa:ubuntu-wine/ppa
+		LIST=$LIST" wine1.7"
 
 	fi
 
@@ -469,7 +472,7 @@ start_install() {
 	#Others - Equinox themes
 	if $bool_equinox ; then
 		echo "Add Equinox themes to list" 
-		add-apt-repository ppa:tiheum/equinox
+		add-apt-repository -y ppa:tiheum/equinox
 		LIST=$LIST" gtk2-engines-equinox equinox-theme equinox-ubuntu-theme faenza-icon-theme faenza-dark-extras"
 	fi
 
@@ -487,28 +490,6 @@ start_install() {
 	aptitude update
 	aptitude -y install $LIST
 	fi
-	##################################################
-	#  Games functions
-	##################################################
-
-	##################
-	#Games - Steam -- Uncomment if you want to install steam
-	# if $bool_steam ; then
-	#     echo "Install Steam" 
-	# 	wget http://media.steampowered.com/client/installer/steam.deb 
-	# 	dpkg -i steam.deb
-	# fi
-	
-	##################################################
-	# LAMPP package
-	##################################################
-
-	##################
-	# Lampp with phpmyadmin -- Uncomment if you want to install steam
-	 if $bool_lampp ; then
-	    echo "Installing LAMPP with phpmyadmin" 
-	 	wget http://downloads.sourceforge.net/project/xampp/XAMPP%20Linux/1.8.3/xampp-linux-1.8.3-3-installer.run && chmod 700 ./xampp-linux-1.8.3-3-installer.run && ./xampp-linux-1.8.3-3-installer.run
-	 fi
 	
 	###################################################
 	# Post Installation procedure for PHPMyAdmin
@@ -524,7 +505,38 @@ start_install() {
 
 	fi
 
+	###################################################
+	# Post Installation procedure for Wine
+	###################################################
+	if $bool_wine ; then
+		echo -e "\nConfiguring Wine...Please wait\n"
+		winecfg &
+	fi
+	##################################################
+	#  Games functions
+	##################################################
 
+	##################
+	#Games - Steam -- Uncomment if you want to install steam
+	# if $bool_steam ; then
+	#     echo "Install Steam" 
+	# 	wget http://media.steampowered.com/client/installer/steam.deb 
+	# 	dpkg -i steam.deb
+	# fi
+	
+	##################################################
+	# LAMPP package
+	##################################################
+	##################
+	# Lampp with phpmyadmin -- Uncomment if you want to install steam
+	 if $bool_lampp ; then
+	    echo "Installing LAMPP with phpmyadmin" 
+	 	wget http://downloads.sourceforge.net/project/xampp/XAMPP%20Linux/1.8.3/xampp-linux-1.8.3-3-installer.run && chmod 700 ./xampp-linux-1.8.3-3-installer.run && ./xampp-linux-1.8.3-3-installer.run
+	 fi
+
+	##################################################
+	# Node.js package
+	##################################################
 	##################
 	# Installation of Developement - Node.js
 	if $bool_node ; then

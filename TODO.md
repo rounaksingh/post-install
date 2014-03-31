@@ -32,6 +32,8 @@
 
 * list of packages lastly installed.
 
+* check for double selection in selected list.
+
 * Support packages: 
 
 	* Nemo Dropbox support
@@ -39,3 +41,5 @@
 	* Grub customizer support
 
 	* add 64 bit full support for google-chrome, etc.
+
+	* Times new roman, etc. support.
